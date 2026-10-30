@@ -3,7 +3,7 @@ import { resolveRoute } from './App';
 
 describe('route resolution', () => {
   it.each([
-    ['/', 'home'], ['/play', 'practice'], ['/multiplayer', 'multiplayer'], ['/stats', 'stats'], ['/settings', 'settings'], ['/help', 'help'],
+    ['/', 'home'], ['/play', 'play'], ['/multiplayer', 'multiplayer'], ['/stats', 'stats'], ['/settings', 'settings'], ['/help', 'help'],
   ])('resolves %s', (path, route) => expect(resolveRoute(path)).toBe(route));
 
   it('supports internal aliases and gives unknown routes a not-found destination', () => {
