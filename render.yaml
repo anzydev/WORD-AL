@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: word-al-server
+    runtime: node
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:server
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: PUBLIC_APP_URL
+        sync: false
+      - key: DATA_FILE
+        value: /var/data/word-al.json
+      - key: LOG_LEVEL
+        value: info
