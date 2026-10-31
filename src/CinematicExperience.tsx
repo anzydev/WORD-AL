@@ -11,10 +11,11 @@ export function CinematicExperience() {
       const stage = stageRef.current;
       const canvas = canvasRef.current;
       if (!stage || !canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const [THREE, { gsap }, { ScrollTrigger }] = await Promise.all([
+      const [THREE, { gsap }, { ScrollTrigger }, { GLTFLoader }] = await Promise.all([
         import('three'),
         import('gsap'),
         import('gsap/ScrollTrigger'),
+        import('three/examples/jsm/loaders/GLTFLoader.js'),
       ]);
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger);
@@ -26,30 +27,26 @@ export function CinematicExperience() {
       const camera = new THREE.PerspectiveCamera(38, stage.clientWidth / stage.clientHeight, 0.1, 100);
       camera.position.set(0, 0, 9);
       const group = new THREE.Group();
-      const crystalPositions = [
-        [-2, 1.4], [-1, 0.7], [0, 0], [1, -0.7], [2, -1.4],
-        [-1.4, -0.2], [0, -0.2], [1.4, -0.2],
-        [-1.2, -1.2], [0, -1.2], [1.2, -1.2],
-      ];
       const geometries: Array<{ dispose: () => void }> = [];
       const materials: Array<{ dispose: () => void }> = [];
+      const loader = new GLTFLoader();
+      const crystal = await loader.loadAsync('/models/crystal-cluster.glb');
+      const source = crystal.scene;
+      source.scale.setScalar(0.42);
+      source.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        geometries.push(object.geometry);
+        const material = Array.isArray(object.material) ? object.material : [object.material];
+        materials.push(...material);
+      });
+      const crystalPositions = [[-2.2, 1.3], [-1.1, 0.7], [0, 0], [1.1, -0.7], [2.2, -1.3], [-1.5, -0.45], [0, -0.45], [1.5, -0.45]];
       crystalPositions.forEach(([targetX, targetY], index) => {
-        const material = new THREE.MeshPhysicalMaterial({
-          color: index % 3 === 0 ? 0x6aaa64 : index % 3 === 1 ? 0xc9b458 : 0xe7f4ef,
-          roughness: 0.12,
-          metalness: 0.12,
-          transmission: 0.45,
-          transparent: true,
-          opacity: 0.86,
-        });
-        const geometry = new THREE.IcosahedronGeometry(0.48 + (index % 3) * 0.08, 0);
-        const tile = new THREE.Mesh(geometry, material);
-        tile.userData.target = new THREE.Vector3(targetX * 0.72, targetY * 0.72, 0);
-        tile.position.set((index % 2 ? -1 : 1) * (3.4 + index * 0.12), 2.8 - index * 0.34, (index % 4) - 1.5);
-        tile.rotation.set(index * 0.7, index * 0.35, index * 0.2);
-        group.add(tile);
-        geometries.push(geometry);
-        materials.push(material);
+        const fragment = source.clone(true);
+        fragment.userData.target = new THREE.Vector3(targetX, targetY, 0);
+        fragment.position.set((index % 2 ? -1 : 1) * (3.5 + index * 0.12), 2.8 - index * 0.5, (index % 4) - 1.5);
+        fragment.rotation.set(index * 0.7, index * 0.35, index * 0.2);
+        fragment.scale.multiplyScalar(0.18 + (index % 3) * 0.035);
+        group.add(fragment);
       });
       scene.add(group);
       scene.add(new THREE.AmbientLight(0xffffff, 1.4));
@@ -104,7 +101,7 @@ export function CinematicExperience() {
 
   return <section ref={stageRef} className={`cinematic-stage ${fallback ? 'cinematic-stage-fallback' : ''}`} aria-label="The WORD-AL experience">
     <canvas ref={canvasRef} className={`cinematic-canvas ${fallback ? 'is-fallback' : ''}`} aria-hidden="true" />
-    <div className="cinematic-copy cinematic-copy-intro"><span className="eyebrow">A game of signal and instinct</span><h2>Every choice changes the shape of the answer.</h2><p>Crystal fragments gather into a letter as your next guess comes into focus.</p></div>
+    <div className="cinematic-copy cinematic-copy-intro"><span className="eyebrow">A game of signal and instinct</span><h2>Every choice changes the shape of the answer.</h2><p>A real crystal cluster breaks apart, then gathers into a letter as your next guess comes into focus.</p></div>
     <div className="cinematic-copy cinematic-copy-middle"><span className="eyebrow">Built for the long game</span><h2>Practice alone. Enter a room. Stay for the rematch.</h2><button className="text-button" onClick={() => { window.location.hash = '#/play'; }}>Choose your mode →</button></div>
     <div className="cinematic-copy cinematic-copy-end"><span className="eyebrow">Your next word is waiting</span><h2>Play with intention.</h2><button className="button button-primary" onClick={() => { window.location.hash = '#/play'; }}>Start playing</button></div>
   </section>;

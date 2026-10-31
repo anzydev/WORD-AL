@@ -21,8 +21,9 @@ describe('cinematic experience contracts', () => {
   });
 
   it('uses scroll-led crystal fragments that assemble into a letter', () => {
+    expect(source).toContain("import('three/examples/jsm/loaders/GLTFLoader.js')");
+    expect(source).toContain("loader.loadAsync('/models/crystal-cluster.glb')");
     expect(source).toContain('const crystalPositions');
-    expect(source).toContain('new THREE.IcosahedronGeometry');
     expect(source).toContain('child.userData.target');
     expect(source).toContain('group.position.z');
     expect(css).toContain('rgba(106,170,100,.22)');
