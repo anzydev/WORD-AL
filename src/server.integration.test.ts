@@ -351,4 +351,23 @@ describe('Fastify and Socket.IO server', () => {
       else expect(state.deadline - Date.now()).toBeLessThanOrEqual(60_000);
     });
   });
+
+  it('allows starting a match when 2 connected players are ready even if room capacity is larger', async () => {
+    const connect = async () => {
+      const client = io(baseUrl, { transports: ['websocket'], reconnection: false, timeout: 3_000 });
+      extraSockets.push(client);
+      await new Promise<void>((resolve, reject) => { client.once('session:ready', () => resolve()); client.once('connect_error', reject); });
+      return client;
+    };
+    const host = await connect();
+    const guest = await connect();
+    const ask = (client: Socket, event: string, payload: unknown) => new Promise<any>((resolve) => client.emit(event, payload, resolve));
+    const created = await ask(host, 'room:create', { name: 'HostCapacity', requestId: `capacity-start-${Date.now()}` });
+    const code = created.room.code;
+    await ask(guest, 'room:join', { name: 'GuestCapacity', roomCode: code });
+    await ask(host, 'room:config:update', { roomCode: code, config: { ...created.room.config, playerCount: 4 } });
+    await ask(guest, 'room:ready', { roomCode: code, ready: true });
+    const started = await ask(host, 'room:start', { roomCode: code });
+    expect(started.ok).toBe(true);
+  });
 });
