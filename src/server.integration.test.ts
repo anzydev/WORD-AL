@@ -234,6 +234,8 @@ describe('Fastify and Socket.IO server', () => {
     const ask = (client: Socket, event: string, payload: unknown) => new Promise<any>((resolve) => client.emit(event, payload, resolve));
     const created = await ask(clients[0], 'room:create', { name: 'Player 1', requestId: `capacity-${Date.now()}` });
     expect(created.ok).toBe(true);
+    const expanded = await ask(clients[0], 'room:config:update', { roomCode: created.room.code, config: { ...created.room.config, playerCount: 6 }, revision: created.room.revision });
+    expect(expanded.ok).toBe(true);
     for (let index = 1; index < 6; index += 1) expect((await ask(clients[index], 'room:join', { name: `Player ${index + 1}`, roomCode: created.room.code })).ok).toBe(true);
     expect((await ask(clients[6], 'room:join', { name: 'Player 7', roomCode: created.room.code })).error.code).toBe('ROOM_FULL');
     expect((await ask(clients[6], 'room:join', { name: 'Player 7', roomCode: 'ZZZZZ' })).error.code).toBe('ROOM_NOT_FOUND');

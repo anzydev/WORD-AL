@@ -10,6 +10,8 @@ WORD-AL is a small TypeScript application with a shared rules boundary. The UI m
 
 `src/styles.css` contains semantic design tokens for light and dark themes. The visual language is restrained: a centered header, compact square tile grid, thin borders, green/yellow/gray feedback, and no decorative background treatments. Local storage is used only for preferences, practice configuration, and practice statistics.
 
+The landing page adds `src/CinematicExperience.tsx` as an isolated, lazy-loaded visual layer. Three.js and GSAP/ScrollTrigger are loaded only for the cinematic section; the scene caps device pixel ratio, responds to resize, disposes renderer/material/geometry resources, and falls back to readable DOM content when motion is reduced or WebGL initialization fails. Gameplay routes do not depend on the scene.
+
 ## Server
 
 `server/index.ts` exposes `/health` and `/ready` and establishes Socket.IO room, lobby, gameplay, scoring, progression, rematch, and closure events. `src/lifecycle.ts` centralizes permitted lifecycle transitions. Each room's current round and session summaries are in memory; reconnecting clients can recover their state while the process remains running, but a server restart loses active sessions and detailed round history. `src/scoring.ts` owns pure score-breakdown and shared-placement logic. Every accepted multiplayer action is validated on the server, and active answers/private guesses are excluded from public progress payloads.

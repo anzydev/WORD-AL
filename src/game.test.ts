@@ -49,9 +49,10 @@ describe('WORD-AL feedback engine', () => {
     expect(PracticeConfigSchema.safeParse({ matches: 0, rounds: 7, difficulty: 'hard', timer: null, hints: true, strict: false, category: 'general' }).success).toBe(false);
     expect(GuessInputSchema.safeParse({ roundId: 'r1', guess: 'crane' }).success).toBe(true);
     expect(GuessInputSchema.safeParse({ roundId: 'r1', guess: 'crane', score: 200 }).success).toBe(false);
-    expect(MultiplayerSettingsSchema.safeParse({ difficulty: 'easy', timer: 90, matches: 1, rounds: 7, hints: false, strict: true, category: 'general', distribution: 'same', chaos: false }).success).toBe(true);
+    expect(MultiplayerSettingsSchema.safeParse({ playerCount: 2, difficulty: 'easy', timer: 90, matches: 1, rounds: 7, hints: false, strict: true, category: 'general', distribution: 'same', chaos: false }).success).toBe(true);
     expect(MultiplayerSettingsSchema.safeParse(DEFAULT_MULTIPLAYER_SETTINGS).success).toBe(true);
     expect(DEFAULT_MULTIPLAYER_SETTINGS).toMatchObject({ timer: 90, distribution: 'same', chaos: false });
+    expect(MultiplayerSettingsSchema.safeParse({ ...DEFAULT_MULTIPLAYER_SETTINGS, playerCount: 7 }).success).toBe(false);
     for (const timer of [60, 90, 120]) for (const difficulty of ['easy', 'hard']) for (const distribution of ['same', 'random']) {
       expect(MultiplayerSettingsSchema.safeParse({ ...DEFAULT_MULTIPLAYER_SETTINGS, timer, difficulty, distribution }).success).toBe(true);
     }

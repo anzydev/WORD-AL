@@ -28,6 +28,7 @@ export const GuessInputSchema = z.object({
   guess: z.string().regex(/^[a-zA-Z]+$/).max(6),
 }).strict();
 export const MultiplayerSettingsSchema = z.object({
+  playerCount: z.number().int().min(2).max(6),
   difficulty: DifficultySchema,
   timer: z.union([z.literal(60), z.literal(90), z.literal(120)]),
   matches: z.number().int().min(1).max(5),
@@ -40,6 +41,7 @@ export const MultiplayerSettingsSchema = z.object({
 });
 export type MultiplayerSettings = z.infer<typeof MultiplayerSettingsSchema>;
 export const DEFAULT_MULTIPLAYER_SETTINGS: MultiplayerSettings = {
+  playerCount: 2,
   timer: 90,
   matches: 1,
   rounds: 1,
