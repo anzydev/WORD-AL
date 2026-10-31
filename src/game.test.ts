@@ -25,6 +25,16 @@ describe('WORD-AL feedback engine', () => {
     expect(() => feedbackFor('CRANE', 'CAT')).toThrow(RangeError);
   });
 
+  it('scores the home board preview against one answer', () => {
+    const rows = ['weary', 'grave', 'vigor'].map((word) => ({ word, feedback: feedbackFor('vigor', word) }));
+    expect(rows.map(({ feedback }) => feedback)).toEqual([
+      ['absent', 'absent', 'absent', 'present', 'absent'],
+      ['present', 'present', 'absent', 'present', 'absent'],
+      ['correct', 'correct', 'correct', 'correct', 'correct'],
+    ]);
+    expect(keyboardFeedback(rows)).toMatchObject({ v: 'correct', i: 'correct', g: 'correct', o: 'correct', r: 'correct', e: 'absent' });
+  });
+
   it('never downgrades a keyboard key', () => {
     expect(keyboardFeedback([
       { word: 'crane', feedback: ['correct', 'absent', 'absent', 'absent', 'absent'] },
