@@ -44,7 +44,7 @@ export function Keyboard({ feedback, onAction, disabled = false }: { feedback: R
     const action = actionForKey(key);
     const state = feedback[key.toLowerCase()];
     const label = `${key === 'BACKSPACE' ? 'Backspace' : key === 'ENTER' ? 'Enter' : key}${state ? `, ${state === 'correct' ? 'correct position' : state === 'present' ? 'in word' : 'not in word'}` : ''}`;
-    return <button key={key} type="button" className={`key ${key.length > 1 ? 'key-wide' : ''} ${state ? `key-${state}` : ''}`} onClick={() => action && onAction(action)} disabled={disabled} aria-label={label}>{key === 'BACKSPACE' ? '⌫' : key}</button>;
+    return <button key={key} type="button" data-letter={key.length === 1 ? key : undefined} className={`key ${key.length > 1 ? 'key-wide' : ''} ${state ? `key-${state}` : ''}`} onClick={() => action && onAction(action)} disabled={disabled} aria-label={label}>{key === 'BACKSPACE' ? '⌫' : key}</button>;
   })}</div>)}</div>;
 }
 

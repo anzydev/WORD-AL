@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { playKeySound, playSound, resetPlayedSoundEventsForTests } from './sound';
+import { playControlSound, playKeySound, playSound, resetPlayedSoundEventsForTests } from './sound';
 
 class FakeAudioContext {
   state = 'running'; currentTime = 1; destination = {};
@@ -41,6 +41,18 @@ describe('optional sound feedback', () => {
     vi.stubGlobal('window', { localStorage: { getItem: () => 'true' }, AudioContext: vi.fn(MockAudioContext) });
     playSound('hover');
     expect(instances[0].oscillator.frequency.value).toBe(520);
+  });
+
+  it('gives control categories distinct sound profiles', () => {
+    const instances: FakeAudioContext[] = [];
+    class MockAudioContext extends FakeAudioContext { constructor() { super(); instances.push(this); } }
+    vi.stubGlobal('window', { localStorage: { getItem: () => 'true' }, AudioContext: vi.fn(MockAudioContext) });
+    playControlSound('primary');
+    const primaryFrequency = instances[0].oscillator.frequency.value;
+    resetPlayedSoundEventsForTests();
+    playControlSound('theme');
+    expect(primaryFrequency).toBe(440);
+    expect(instances[1].oscillator.frequency.value).toBe(590);
   });
 
   it('tolerates missing key sample playback', () => {

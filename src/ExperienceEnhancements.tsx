@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
-import { playKeySound, playSound } from './sound';
+import { playControlSound, playKeySound, playSound, type ControlSound } from './sound';
+
+function soundForTarget(target: Element): ControlSound | null {
+  if (target.classList.contains('theme-toggle')) return 'theme';
+  if (target.classList.contains('icon-button') || target.classList.contains('close-button')) return 'icon';
+  if (target.classList.contains('button-primary')) return 'primary';
+  if (target.classList.contains('button-secondary') || target.classList.contains('option')) return 'secondary';
+  if (target.classList.contains('choice-card') || target.classList.contains('mode-card')) return 'choice';
+  if (target.classList.contains('text-button') || target.classList.contains('back-link') || target.classList.contains('wordmark')) return 'text';
+  if (target.matches('button, a, [role="button"]')) return 'text';
+  return null;
+}
 
 export function ExperienceEnhancements() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -42,7 +53,11 @@ export function ExperienceEnhancements() {
       if (target && target !== lastInteractiveTarget) {
         const letter = target instanceof HTMLElement ? target.dataset.letter : undefined;
         if (letter) playKeySound(letter);
-        else playSound('hover');
+        else if (target.classList.contains('key-wide')) playSound(target.textContent?.includes('ENTER') ? 'submit' : 'error');
+        else {
+          const controlSound = soundForTarget(target);
+          if (controlSound) playControlSound(controlSound);
+        }
         lastInteractiveTarget = target;
       } else if (!target) {
         lastInteractiveTarget = null;

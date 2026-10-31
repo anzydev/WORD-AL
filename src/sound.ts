@@ -1,4 +1,4 @@
-export type SoundName = 'type' | 'submit' | 'success' | 'error' | 'hover';
+export type SoundName = 'type' | 'submit' | 'success' | 'error' | 'hover' | 'primary' | 'secondary' | 'text' | 'icon' | 'theme' | 'choice';
 
 let context: AudioContext | null = null;
 const playedEvents = new Set<string>();
@@ -18,9 +18,23 @@ export function playSound(name: SoundName, eventId?: string) {
     if (context.state === 'suspended') void context.resume().catch(() => undefined);
     const oscillator = context.createOscillator();
     const gain = context.createGain();
-    const frequency = name === 'success' ? 640 : name === 'error' ? 180 : name === 'submit' ? 320 : name === 'hover' ? 520 : 240;
-    const duration = name === 'success' ? 0.18 : name === 'hover' ? 0.045 : 0.07;
-    oscillator.type = name === 'hover' ? 'triangle' : 'sine';
+    const profiles: Record<SoundName, { frequency: number; duration: number; type: OscillatorType }> = {
+      success: { frequency: 640, duration: 0.18, type: 'sine' },
+      error: { frequency: 180, duration: 0.1, type: 'sawtooth' },
+      submit: { frequency: 320, duration: 0.07, type: 'square' },
+      hover: { frequency: 520, duration: 0.045, type: 'triangle' },
+      type: { frequency: 240, duration: 0.07, type: 'sine' },
+      primary: { frequency: 440, duration: 0.1, type: 'triangle' },
+      secondary: { frequency: 370, duration: 0.065, type: 'sine' },
+      text: { frequency: 290, duration: 0.04, type: 'triangle' },
+      icon: { frequency: 720, duration: 0.035, type: 'square' },
+      theme: { frequency: 590, duration: 0.12, type: 'sine' },
+      choice: { frequency: 400, duration: 0.08, type: 'triangle' },
+    };
+    const profile = profiles[name];
+    const frequency = profile.frequency;
+    const duration = profile.duration;
+    oscillator.type = profile.type;
     oscillator.frequency.value = frequency;
     gain.gain.setValueAtTime(0.025, context.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
@@ -34,6 +48,12 @@ export function playSound(name: SoundName, eventId?: string) {
 }
 
 const keySoundLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export type ControlSound = 'primary' | 'secondary' | 'text' | 'icon' | 'theme' | 'choice';
+
+export function playControlSound(control: ControlSound) {
+  playSound(control);
+}
 
 export function playKeySound(letter: string) {
   try {
