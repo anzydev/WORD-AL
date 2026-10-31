@@ -58,14 +58,21 @@ export const DIFFICULTIES: Record<Difficulty, { label: string; wordLength: numbe
   hard: { label: 'Hard', wordLength: 6, attempts: 8, description: 'Six letters · eight guesses' },
 };
 
+import { ANSWERS_5, ANSWERS_6, WORDS_5_STR, WORDS_6_STR } from './words.js';
+
 export const KEY_ROWS = [['Q','W','E','R','T','Y','U','I','O','P'], ['A','S','D','F','G','H','J','K','L'], ['ENTER','Z','X','C','V','B','N','M','BACKSPACE']];
 
 export const ANSWERS: Record<number, string[]> = {
-  5: ['arise','audio','badge','bench','blaze','cedar','charm','crane','crisp','delta','dream','eagle','ember','flame','flint','grape','heart','house','irate','ivory','jazzy','latch','lemon','light','maple','ocean','pearl','pilot','plaid','pride','prism','quiet','radio','raven','river','score','sheep','shine','skate','slate','smile','spice','stare','steam','stone','sweep','teeth','think','tiger','toast','train','trust','ultra','value','vivid','waltz','wheat','whale','world','young','zebra'],
-  6: ['artist','bright','button','castle','circle','crafts','dragon','forest','friend','golden','honest','island','jungle','little','marble','moment','orange','planet','puzzle','rocket','silver','smooth','spring','street','summer','ticket','travel','violet','window','winter'],
+  5: ANSWERS_5,
+  6: ANSWERS_6,
 };
 
-export const ACCEPTED = new Set([...ANSWERS[5], ...ANSWERS[6], 'about','above','after','again','agree','alone','apple','beach','black','block','bring','chair','chase','check','child','clean','clear','close','cloud','count','cover','dance','early','enjoy','every','field','final','first','floor','found','fresh','front','glass','great','green','group','happy','human','house','known','large','laugh','learn','leave','local','magic','match','maybe','money','month','music','never','night','north','often','order','other','paper','party','phone','place','plant','point','power','quick','reach','ready','right','round','shape','short','sleep','small','sound','space','speak','spell','start','still','story','study','table','today','touch','tower','under','until','voice','watch','water','where','which','white','whole','whose','woman','write','wrong','yellow','always','answer','around','before','better','during','family','future','inside','member','number','people','public','really','school','should','simple','strong','things','though','toward','unique','without']);
+export const ACCEPTED = new Set([
+  ...ANSWERS[5],
+  ...ANSWERS[6],
+  ...WORDS_5_STR.split(' '),
+  ...WORDS_6_STR.split(' '),
+]);
 
 export const normalize = (value: string) => value.trim().toLowerCase();
 

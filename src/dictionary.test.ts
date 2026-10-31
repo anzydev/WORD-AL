@@ -14,11 +14,14 @@ describe('dictionary boundary', () => {
     expect(isValidWord('crane', 6)).toBe(false);
     expect(isValidWord('about', 5)).toBe(true);
     expect(isValidWord('about', 5, 'answer')).toBe(false);
+    expect(isValidWord('drift', 5)).toBe(true);
+    expect(isValidWord('crash', 5)).toBe(true);
     for (const length of [5, 6] as const) {
       expect(answerWords[length].every((word) => word.length === length && acceptedWords[length].has(word))).toBe(true);
       expect(new Set(answerWords[length]).size).toBe(answerWords[length].length);
     }
     expect(dictionarySizes.answers[5]).toBeGreaterThan(0);
+    expect(dictionarySizes.acceptedGuesses[5]).toBeGreaterThan(15000);
     expect(dictionarySizes.acceptedGuesses[6]).toBeGreaterThan(dictionarySizes.answers[6]);
   });
 
