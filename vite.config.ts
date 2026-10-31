@@ -5,4 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: { port: 5173 },
   test: { exclude: ['**/node_modules/**', '**/dist/**', '**/dist-server/**'] },
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 });
