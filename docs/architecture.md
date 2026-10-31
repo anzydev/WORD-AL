@@ -10,7 +10,7 @@ WORD-AL is a small TypeScript application with a shared rules boundary. The UI m
 
 `src/styles.css` contains semantic design tokens for light and dark themes. The visual language is restrained: a centered header, compact square tile grid, thin borders, green/yellow/gray feedback, and no decorative background treatments. Local storage is used only for preferences, practice configuration, and practice statistics.
 
-The landing page adds `src/CinematicExperience.tsx` as an isolated, lazy-loaded visual layer. Three.js and GSAP/ScrollTrigger are loaded only for the cinematic section; the scene caps device pixel ratio, responds to resize, disposes renderer/material/geometry resources, and falls back to readable DOM content when motion is reduced or WebGL initialization fails. Gameplay routes do not depend on the scene.
+The landing page adds `src/CinematicExperience.tsx` as an isolated, lazy-loaded visual layer. Three.js and GSAP/ScrollTrigger are loaded only for the cinematic section; the scene uses a scroll-reactive stacked word sculpture, a deliberate paper-to-amber-to-olive color bridge, caps device pixel ratio, responds to resize, disposes renderer/material/geometry resources, and falls back to readable DOM content when motion is reduced or WebGL initialization fails. `src/ExperienceEnhancements.tsx` provides optional Lenis easing and a pointer-capable custom cursor; both are enhancement-only and never replace native keyboard, touch, focus, or reduced-motion behavior. Gameplay routes do not depend on the scene.
 
 ## Server
 

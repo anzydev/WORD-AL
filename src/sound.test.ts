@@ -35,6 +35,14 @@ describe('optional sound feedback', () => {
     expect(audio.oscillator.frequency.value).toBe(640);
   });
 
+  it('supports a short hover tone for interactive affordances', () => {
+    const instances: FakeAudioContext[] = [];
+    class MockAudioContext extends FakeAudioContext { constructor() { super(); instances.push(this); } }
+    vi.stubGlobal('window', { localStorage: { getItem: () => 'true' }, AudioContext: vi.fn(MockAudioContext) });
+    playSound('hover');
+    expect(instances[0].oscillator.frequency.value).toBe(520);
+  });
+
   it('silently tolerates unavailable audio and rejected resume promises', async () => {
     vi.stubGlobal('window', { localStorage: { getItem: () => 'true' }, AudioContext: class extends FakeAudioContext { state = 'suspended'; } });
     expect(() => playSound('submit')).not.toThrow();

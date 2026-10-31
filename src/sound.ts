@@ -1,4 +1,4 @@
-export type SoundName = 'type' | 'submit' | 'success' | 'error';
+export type SoundName = 'type' | 'submit' | 'success' | 'error' | 'hover';
 
 let context: AudioContext | null = null;
 const playedEvents = new Set<string>();
@@ -18,9 +18,9 @@ export function playSound(name: SoundName, eventId?: string) {
     if (context.state === 'suspended') void context.resume().catch(() => undefined);
     const oscillator = context.createOscillator();
     const gain = context.createGain();
-    const frequency = name === 'success' ? 640 : name === 'error' ? 180 : name === 'submit' ? 320 : 240;
-    const duration = name === 'success' ? 0.18 : 0.07;
-    oscillator.type = 'sine';
+    const frequency = name === 'success' ? 640 : name === 'error' ? 180 : name === 'submit' ? 320 : name === 'hover' ? 520 : 240;
+    const duration = name === 'success' ? 0.18 : name === 'hover' ? 0.045 : 0.07;
+    oscillator.type = name === 'hover' ? 'triangle' : 'sine';
     oscillator.frequency.value = frequency;
     gain.gain.setValueAtTime(0.025, context.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
@@ -35,4 +35,5 @@ export function playSound(name: SoundName, eventId?: string) {
 
 export function resetPlayedSoundEventsForTests() {
   playedEvents.clear();
+  context = null;
 }

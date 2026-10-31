@@ -26,14 +26,16 @@ export function CinematicExperience() {
       const camera = new THREE.PerspectiveCamera(38, stage.clientWidth / stage.clientHeight, 0.1, 100);
       camera.position.set(0, 0, 9);
       const group = new THREE.Group();
-      const material = new THREE.MeshStandardMaterial({ color: 0xd8d2c4, roughness: 0.28, metalness: 0.35 });
-      const accent = new THREE.MeshStandardMaterial({ color: 0xb8a66a, roughness: 0.2, metalness: 0.65 });
-      const geometry = new THREE.BoxGeometry(1.05, 1.05, 1.05);
+      const material = new THREE.MeshStandardMaterial({ color: 0xe7ddc6, roughness: 0.3, metalness: 0.28 });
+      const accent = new THREE.MeshStandardMaterial({ color: 0xd0a43b, roughness: 0.2, metalness: 0.58 });
+      const geometry = new THREE.BoxGeometry(1.02, 1.02, 1.02);
       for (let index = 0; index < 18; index += 1) {
         const tile = new THREE.Mesh(geometry, index % 5 === 0 ? accent : material);
-        const angle = (index / 18) * Math.PI * 2;
-        tile.position.set(Math.cos(angle) * (2.1 + (index % 3) * 0.28), Math.sin(angle) * 1.05, -index * 0.08);
-        tile.rotation.set(index * 0.17, angle, index * 0.11);
+        const column = index % 6;
+        const row = Math.floor(index / 6);
+        const angle = (column - 2.5) * 0.16 + row * 0.1;
+        tile.position.set((column - 2.5) * 1.12, (1 - row) * 1.28, Math.sin(column * 0.8 + row) * 0.35 - row * 0.35);
+        tile.rotation.set(row * 0.24 + index * 0.04, angle, column * 0.08 - row * 0.16);
         group.add(tile);
       }
       scene.add(group);
@@ -46,10 +48,11 @@ export function CinematicExperience() {
       const trigger = ScrollTrigger.create({ trigger: stage, start: 'top top', end: 'bottom bottom', scrub: 1, onUpdate: (self) => { progress = self.progress; } });
       const render = (time: number) => {
         const seconds = time * 0.001;
-        group.rotation.y = progress * Math.PI * 1.8 + seconds * 0.06;
-        group.rotation.x = Math.sin(progress * Math.PI) * 0.28;
-        group.position.y = progress * -0.5;
-        camera.position.z = 9 - progress * 1.3;
+        group.rotation.y = progress * Math.PI * 1.45 + seconds * 0.06;
+        group.rotation.x = Math.sin(progress * Math.PI) * 0.32;
+        group.position.y = progress * -0.65;
+        group.position.z = Math.sin(progress * Math.PI) * 0.5;
+        camera.position.z = 9 - progress * 1.45;
         renderer.render(scene, camera);
         frame = requestAnimationFrame(render);
       };
