@@ -33,6 +33,21 @@ export function playSound(name: SoundName, eventId?: string) {
   }
 }
 
+const keySoundLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export function playKeySound(letter: string) {
+  try {
+    if (typeof window === 'undefined' || window.localStorage.getItem('word-al-sound') === 'false') return;
+    const index = keySoundLetters.indexOf(letter.toUpperCase());
+    if (index < 0 || typeof Audio === 'undefined') return;
+    const sample = new Audio(`/audio/keyboard/key-${String(index + 1).padStart(2, '0')}.wav`);
+    sample.volume = 0.18;
+    void sample.play().catch(() => undefined);
+  } catch {
+    // Audio is optional and must never affect interaction.
+  }
+}
+
 export function resetPlayedSoundEventsForTests() {
   playedEvents.clear();
   context = null;

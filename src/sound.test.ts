@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { playSound, resetPlayedSoundEventsForTests } from './sound';
+import { playKeySound, playSound, resetPlayedSoundEventsForTests } from './sound';
 
 class FakeAudioContext {
   state = 'running'; currentTime = 1; destination = {};
@@ -41,6 +41,11 @@ describe('optional sound feedback', () => {
     vi.stubGlobal('window', { localStorage: { getItem: () => 'true' }, AudioContext: vi.fn(MockAudioContext) });
     playSound('hover');
     expect(instances[0].oscillator.frequency.value).toBe(520);
+  });
+
+  it('tolerates missing key sample playback', () => {
+    vi.stubGlobal('window', { localStorage: { getItem: () => 'true' } });
+    expect(() => playKeySound('W')).not.toThrow();
   });
 
   it('silently tolerates unavailable audio and rejected resume promises', async () => {

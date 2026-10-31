@@ -21,7 +21,8 @@ describe('cinematic experience contracts', () => {
   });
 
   it('uses the scroll-led word sculpture and continuous color bridge', () => {
-    expect(source).toContain('const column = index % 6');
+    expect(source).toContain("const words = ['WEARY', 'GRAVE', 'VIGOR']");
+    expect(source).toContain('new THREE.CylinderGeometry');
     expect(source).toContain('group.position.z');
     expect(css).toContain('rgba(106,170,100,.22)');
     expect(css).toContain('#121213 48%');

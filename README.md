@@ -5,7 +5,7 @@ WORD-AL is a clean, Wordle-inspired word puzzle with configurable solo practice 
 ## Current implementation
 
 - Responsive landing screen with a polished semantic visual system, tactile control states, help, stats, settings, light/dark themes, and persistent preferences.
-- Editorial-cinematic landing experience with lazy-loaded Three.js/GSAP scroll choreography, a stacked word sculpture, continuous paper-to-amber-to-olive color direction, eased scrolling, pointer-aware cursor enhancement, reduced-motion behavior, and a DOM fallback when WebGL is unavailable.
+- Editorial-cinematic landing experience with lazy-loaded Three.js/GSAP scroll choreography, a scroll-reactive 3-D hexagonal letter sculpture, game-first neutral/green/yellow/gray color direction, eased scrolling, pointer-aware cursor enhancement, distinct optional per-letter keypress audio, reduced-motion behavior, and a DOM fallback when WebGL is unavailable.
 - Easy mode: five letters and six guesses.
 - Hard mode: six letters and eight guesses.
 - Valid-word checking, duplicate-letter feedback, keyboard feedback precedence, timers, hints, and Strict Mode.
@@ -67,3 +67,4 @@ Feedback uses a two-pass algorithm: exact matches are allocated first, then rema
 ## Verification
 
 Guest session tokens are server-managed and expire after the configured TTL; profile/history APIs require the token and guests are explicitly not promised cross-device persistence. Final multiplayer session results are stored once per player and retried on transient file-write failures; practice results remain browser-local. Multiplayer rooms and active sessions are in-memory and do not survive server restarts. `/health` is liveness; `/ready` checks persistence access. The application is hardened for a single-process demo, but **not ready for public production** until transactional storage/migrations, durable/shared sessions and multiplayer state, and deployment operations are implemented. No production deployment or backup has been performed.
+- The landing board has distinct, optional per-letter keypress samples sourced from an openly licensed keyboard pack; playback failures never affect gameplay.

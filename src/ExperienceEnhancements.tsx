@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
-import { playSound } from './sound';
+import { playKeySound, playSound } from './sound';
 
 export function ExperienceEnhancements() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -37,10 +37,12 @@ export function ExperienceEnhancements() {
       y = event.clientY;
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       setCursorVisible(true);
-      const target = event.target instanceof Element ? event.target.closest('button, a, [role="button"], input, select') : null;
+      const target = event.target instanceof Element ? event.target.closest('button, a, [role="button"], input, select, .hero-tile') : null;
       setCursorActive(Boolean(target));
       if (target && target !== lastInteractiveTarget) {
-        playSound('hover');
+        const letter = target instanceof HTMLElement ? target.dataset.letter : undefined;
+        if (letter) playKeySound(letter);
+        else playSound('hover');
         lastInteractiveTarget = target;
       } else if (!target) {
         lastInteractiveTarget = null;
